@@ -1,13 +1,11 @@
-#ifndef MONTY_H
-#define MONTY_H
+#ifndef MONTY
+#define MONTY
 
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-
-#define STACK 0
-#define QUEUE 1
+#define UNUSED(x) (void)(x)
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -20,77 +18,67 @@
  */
 typedef struct stack_s
 {
-        int n;
-        struct stack_s *prev;
-        struct stack_s *next;
+	int n;
+	struct stack_s *prev;
+	struct stack_s *next;
 } stack_t;
 
 /**
- * struct instruction_s - opcoode and its function
+ * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
  *
  * Description: opcode and its function
  * for stack, queues, LIFO, FIFO Holberton project
  */
+
 typedef struct instruction_s
 {
-        char *opcode;
-        int (*f)(stack_t **stack, unsigned int line_number);
+	char *opcode;
+	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
 /**
- * struct command_arg - a command and its argument (used in parsing and push)
- * @command: a command/opcode
- * @arg: an integer argument of the command (used for push)
- *
- * Description: if command is push, arg is pushed onto the stack/queue
- * pushing is the only time this is used
+ * struct buffer -buffers
+ * @fd: File descriptor
+ * @line: Line buffer for input read in
+ * @stack: Double pointer for stack of struct stack_s
+ * Description: various buffers to hold inputs
  */
-typedef struct command_arg
+
+typedef struct buffer
 {
-	char *command;
-	int arg;
-} command_arg;
+	 FILE *fd;
+	 char *line;
+	 stack_t **stack;
 
-extern unsigned int line_number;
+} global_buf;
 
-int (*get_func(char *command))(stack_t **stack, unsigned int line_number);
+extern global_buf buf;
 
-command_arg *parse_line(char *line);
+void pall(stack_t **stack, unsigned int line_num);
+void pint(stack_t **stack, unsigned int line_num);
+void pop(stack_t **stack, unsigned int line_num);
+void add(stack_t **stack, unsigned int line_num);
+void swap(stack_t **stack, unsigned int line_num);
+void nop(stack_t **stack, unsigned int line_num);
+void sub(stack_t **stack, unsigned int line_num);
+void mydiv(stack_t **stack, unsigned int line_num);
+void mymul(stack_t **stack, unsigned int line_num);
+void mymod(stack_t **stack, unsigned int line_num);
+void pstr(stack_t **stack, unsigned int line_num);
+void pchar(stack_t **stack, unsigned int line_num);
 
-void free_stack(stack_t *stack);
 
-int push_to_stack(stack_t **stack, int n, int s_or_q);
+void free_dlistint(stack_t *head);
+void add_dnodeint(stack_t **head, const int n);
 
-int print_all(stack_t **stack, unsigned int line_number);
+unsigned int linecount(FILE *fd);
+void err_msg(char *msg, char *file, int status);
 
-int print_int(stack_t **stack, unsigned int line_number);
+void push(char *token, unsigned int line_num);
+void others(char *token, unsigned int line_num);
 
-int pop_int(stack_t **stack, unsigned int line_number);
-
-int swap_ints(stack_t **stack, unsigned int line_number);
-
-int add_ints(stack_t **stack, unsigned int line_number);
-
-int no_op(stack_t **stack, unsigned int line_number);
-
-int sub_ints(stack_t **stack, unsigned int line_number);
-
-int div_ints(stack_t **stack, unsigned int line_number);
-
-int  mul_ints(stack_t **stack, unsigned int line_number);
-
-int mod_ints(stack_t **stack, unsigned int line_number);
-
-int print_char(stack_t **stack, unsigned int line_number);
-
-int print_string(stack_t **stack, unsigned int line_number);
-
-int rotate_left(stack_t **stack, unsigned int line_number);
-
-int rotate_right(stack_t **stack, unsigned int line_number);
-
-int failure(stack_t **stack, unsigned int line_number);
+void free_all(void);
 
 #endif
